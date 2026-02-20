@@ -25,6 +25,15 @@ customer_orders as (
 
 ),
 
+fact_orders_sum as (
+    select 
+        customer_id
+        , sum(amount) as amount
+    from {{ ref('fct_orders') }}
+    group by customer_id
+),
+
+
 
 final as (
 
@@ -34,12 +43,22 @@ final as (
         customers.last_name,
         customer_orders.first_order_date,
         customer_orders.most_recent_order_date,
-        coalesce(customer_orders.number_of_orders, 0) as number_of_orders
+        coalesce(customer_orders.number_of_orders, 0) as number_of_orders,
+        coalesce(fact_orders_sum.amount, 0) as lifetime_value
 
     from customers
 
     left join customer_orders using (customer_id)
+    left join fact_orders_sum using (customer_id)
 
+),
+
+test_fact_orders_avg as (
+    select 
+        avg(lifetime_value)
+    from final
 )
+
+
 
 select * from final

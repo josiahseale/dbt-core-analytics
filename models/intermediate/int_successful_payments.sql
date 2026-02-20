@@ -1,3 +1,3 @@
 select * 
 from {{ ref('stg_stripe__payments') }}
-where status = 'SUCCESS'
+where status = 'success'
