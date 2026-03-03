@@ -2,7 +2,7 @@ with fact_orders as (
 select
     order_id
     , customer_id
-    , sum(amount) as amount
+    , sum(payment_amount) as amount
 from {{ ref('int_orders') }}
 group by order_id, customer_id
 ),
