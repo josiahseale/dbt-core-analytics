@@ -8,7 +8,7 @@ order by customer_id
 
 successful_payments as (
     select * 
-    exclude (status)
+    exclude (payment_status)
     from {{ ref('int_successful_payments') }}
 ),
 
