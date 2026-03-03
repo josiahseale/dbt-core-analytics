@@ -17,7 +17,7 @@ final as (
         *
     from orders
     left join successful_payments using (order_id)
-    where status not ilike 'return%'
+    where order_status not ilike 'return%'
 )
 
 select * from final
