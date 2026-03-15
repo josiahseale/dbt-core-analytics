@@ -1,0 +1,34 @@
+version: 2
+
+sources:
+  - name: synpuf_prestaging
+    description: "Source-faithful PRESTAGING tables loaded from the SYNPUF raw_unzipped external stage into Snowflake."
+    database: SYNPUF_DEV
+    schema: PRESTAGING
+    loader: metadata-driven lakehouse-to-warehouse prestaging loader
+
+    tables:
+      - name: DE1_0_2008_BENEFICIARY_SUMMARY_FILE_SAMPLE_1
+        identifier: DE1_0_2008_BENEFICIARY_SUMMARY_FILE_SAMPLE_1
+        description: "Sample 01 beneficiary summary file for 2008."
+      - name: DE1_0_2009_BENEFICIARY_SUMMARY_FILE_SAMPLE_1
+        identifier: DE1_0_2009_BENEFICIARY_SUMMARY_FILE_SAMPLE_1
+        description: "Sample 01 beneficiary summary file for 2009."
+      - name: DE1_0_2010_BENEFICIARY_SUMMARY_FILE_SAMPLE_1
+        identifier: DE1_0_2010_BENEFICIARY_SUMMARY_FILE_SAMPLE_1
+        description: "Sample 01 beneficiary summary file for 2010."
+
+      - name: DE1_0_2008_TO_2010_CARRIER_CLAIMS_SAMPLE_1A
+        identifier: DE1_0_2008_TO_2010_CARRIER_CLAIMS_SAMPLE_1A
+        description: "Sample 01 carrier claims file A."
+      - name: DE1_0_2008_TO_2010_CARRIER_CLAIMS_SAMPLE_1B
+        identifier: DE1_0_2008_TO_2010_CARRIER_CLAIMS_SAMPLE_1B
+        description: "Sample 01 carrier claims file B."
+
+      - name: DE1_0_2008_TO_2010_OUTPATIENT_CLAIMS_SAMPLE_1
+        identifier: DE1_0_2008_TO_2010_OUTPATIENT_CLAIMS_SAMPLE_1
+        description: "Sample 01 outpatient claims file."
+
+      - name: DE1_0_2008_TO_2010_PRESCRIPTION_DRUG_EVENTS_SAMPLE_1
+        identifier: DE1_0_2008_TO_2010_PRESCRIPTION_DRUG_EVENTS_SAMPLE_1
+        description: "Sample 01 prescription drug events file."
