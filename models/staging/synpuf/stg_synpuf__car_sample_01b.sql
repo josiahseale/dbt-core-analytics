@@ -1,38 +1,54 @@
 select
     DESYNPUF_ID as desynpuf_id,
     CLM_ID as claim_id,
-    cast(CLM_FROM_DT as date) as claim_from_date,
-    cast(CLM_THRU_DT as date) as claim_thru_date,
-    PRVDR_NUM as provider_number,
-    CLM_PMT_AMT as claim_payment_amount,
-    NCH_CARR_CLM_ALOWD_AMT as nch_carr_clm_allowed_amount,
-    NCH_CARR_CLM_SBMTD_CHRG_AMT as nch_carr_clm_submitted_charge_amount,
-    NCH_CARR_CLM_CASH_DDCTBL_APLD_AMT as nch_carr_clm_cash_deductible_applied_amount,
-    NCH_CARR_CLM_PRMRY_PYR_PD_AMT as nch_carr_clm_primary_payer_paid_amount,
-    CARR_CLM_CASH_DDCTBL_APLD_AMT as carr_clm_cash_deductible_applied_amount,
-    PRNCPAL_DGNS_CD as principal_diagnosis_code,
-    ICD9_DGNS_CD_1 as diagnosis_code_1,
-    ICD9_DGNS_CD_2 as diagnosis_code_2,
-    ICD9_DGNS_CD_3 as diagnosis_code_3,
-    ICD9_DGNS_CD_4 as diagnosis_code_4,
-    ICD9_DGNS_CD_5 as diagnosis_code_5,
-    ICD9_DGNS_CD_6 as diagnosis_code_6,
-    ICD9_DGNS_CD_7 as diagnosis_code_7,
-    ICD9_DGNS_CD_8 as diagnosis_code_8,
-    HCPCS_CD_1 as hcpcs_cd_1,
-    HCPCS_CD_2 as hcpcs_cd_2,
-    HCPCS_CD_3 as hcpcs_cd_3,
-    HCPCS_CD_4 as hcpcs_cd_4,
-    HCPCS_CD_5 as hcpcs_cd_5,
-    HCPCS_CD_6 as hcpcs_cd_6,
-    HCPCS_CD_7 as hcpcs_cd_7,
-    HCPCS_CD_8 as hcpcs_cd_8,
-    HCPCS_CD_9 as hcpcs_cd_9,
-    HCPCS_CD_10 as hcpcs_cd_10,
-    HCPCS_CD_11 as hcpcs_cd_11,
-    HCPCS_CD_12 as hcpcs_cd_12,
-    HCPCS_CD_13 as hcpcs_cd_13,
-    1 as sample_id,
-    'B' as carrier_file_part,
-    'DE1_0_2008_TO_2010_CARRIER_CLAIMS_SAMPLE_1B' as source_table_name
+    try_to_date(CLM_FROM_DT::varchar, 'YYYYMMDD') as claim_from_date,
+    try_to_date(CLM_THRU_DT::varchar, 'YYYYMMDD') as claim_thru_date
+
+    {% for i in range(1, 9) %}
+    , ICD9_DGNS_CD_{{ i }} as icd9_diagnosis_code_{{ i }}
+    {% endfor %}
+
+    {% for i in range(1, 14) %}
+    , PRF_PHYSN_NPI_{{ i }} as provider_physician_npi_{{ i }}
+    {% endfor %}
+
+    {% for i in range(1, 14) %}
+    , TAX_NUM_{{ i }} as tax_num_{{ i }}
+    {% endfor %}
+
+    {% for i in range(1, 14) %}
+    , HCPCS_CD_{{ i }} as hcpcs_cd_{{ i }}
+    {% endfor %}
+
+    {% for i in range(1, 14) %}
+    , LINE_NCH_PMT_AMT_{{ i }} as line_nch_payment_amount_{{ i }}
+    {% endfor %}
+
+    {% for i in range(1, 14) %}
+    , LINE_BENE_PTB_DDCTBL_AMT_{{ i }} as line_beneficiary_part_b_deductible_amount_{{ i }}
+    {% endfor %}
+
+    {% for i in range(1, 14) %}
+    , LINE_BENE_PRMRY_PYR_PD_AMT_{{ i }} as line_beneficiary_primary_payer_paid_amount_{{ i }}
+    {% endfor %}
+
+    {% for i in range(1, 14) %}
+    , LINE_COINSRNC_AMT_{{ i }} as line_coinsurance_amount_{{ i }}
+    {% endfor %}
+
+    {% for i in range(1, 14) %}
+    , LINE_ALOWD_CHRG_AMT_{{ i }} as line_allowed_charge_amount_{{ i }}
+    {% endfor %}
+
+    {% for i in range(1, 14) %}
+    , LINE_PRCSG_IND_CD_{{ i }} as line_processing_indicator_code_{{ i }}
+    {% endfor %}
+
+    {% for i in range(1, 14) %}
+    , LINE_ICD9_DGNS_CD_{{ i }} as line_icd9_diagnosis_code_{{ i }}
+    {% endfor %}
+
+    , 1 as sample_id
+    , 'B' as carrier_file_part
+    , 'DE1_0_2008_TO_2010_CARRIER_CLAIMS_SAMPLE_1B' as source_table_name
 from {{ source('synpuf_prestaging', 'DE1_0_2008_TO_2010_CARRIER_CLAIMS_SAMPLE_1B') }}
