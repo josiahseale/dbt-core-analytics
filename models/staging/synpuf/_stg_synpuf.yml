@@ -1,0 +1,99 @@
+version: 2
+
+models:
+  - name: stg_synpuf__bene_2008_sample_01
+    description: "Typed staging view over the 2008 beneficiary summary file for Sample 01."
+    columns:
+      - name: desynpuf_id
+        tests: [not_null]
+      - name: sample_id
+        tests: [not_null]
+      - name: claim_year
+        tests: [not_null]
+
+  - name: stg_synpuf__bene_2009_sample_01
+    description: "Typed staging view over the 2009 beneficiary summary file for Sample 01."
+    columns:
+      - name: desynpuf_id
+        tests: [not_null]
+      - name: sample_id
+        tests: [not_null]
+      - name: claim_year
+        tests: [not_null]
+
+  - name: stg_synpuf__bene_2010_sample_01
+    description: "Typed staging view over the 2010 beneficiary summary file for Sample 01."
+    columns:
+      - name: desynpuf_id
+        tests: [not_null]
+      - name: sample_id
+        tests: [not_null]
+      - name: claim_year
+        tests: [not_null]
+
+  - name: stg_synpuf__car_sample_01a
+    description: "Typed staging view over Sample 01 carrier claims file A."
+    columns:
+      - name: desynpuf_id
+        tests: [not_null]
+      - name: claim_id
+      - name: claim_from_date
+      - name: claim_thru_date
+      - name: sample_id
+        tests: [not_null]
+      - name: carrier_file_part
+        tests: [not_null]
+
+  - name: stg_synpuf__car_sample_01b
+    description: "Typed staging view over Sample 01 carrier claims file B."
+    columns:
+      - name: desynpuf_id
+        tests: [not_null]
+      - name: claim_id
+      - name: claim_from_date
+      - name: claim_thru_date
+      - name: sample_id
+        tests: [not_null]
+      - name: carrier_file_part
+        tests: [not_null]
+
+  - name: stg_synpuf__op_sample_01
+    description: "Typed staging view over Sample 01 outpatient claims."
+    columns:
+      - name: desynpuf_id
+        tests: [not_null]
+      - name: claim_id
+      - name: claim_from_date
+      - name: claim_thru_date
+      - name: sample_id
+        tests: [not_null]
+
+  - name: stg_synpuf__pde_sample_01
+    description: "Typed staging view over Sample 01 prescription drug events."
+    columns:
+      - name: desynpuf_id
+        tests: [not_null]
+      - name: pde_id
+      - name: srvc_date
+      - name: sample_id
+        tests: [not_null]
+
+  - name: int_synpuf__car_sample_01
+    description: "Union-all of Sample 01 carrier A and B staging models."
+    columns:
+      - name: desynpuf_id
+        tests: [not_null]
+      - name: carrier_file_part
+        tests: [not_null]
+      - name: sample_id
+        tests: [not_null]
+
+  - name: int_synpuf__bene_sample_01
+    description: "Union-all of Sample 01 beneficiary summary files across 2008, 2009, and 2010."
+    columns:
+      - name: desynpuf_id
+        tests: [not_null]
+      - name: claim_year
+        tests: [not_null]
+      - name: sample_id
+        tests: [not_null]
