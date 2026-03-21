@@ -1,0 +1,45 @@
+version: 2
+
+seeds:
+  - name: sitagliptin_product_code_prefixes
+    description: Starter sitagliptin/Januvia PDE product code prefixes for MVP only.
+    columns:
+      - name: product_code_digits
+        tests: [not_null, unique]
+
+models:
+  - name: int_synpuf__rx_sitagliptin_fills
+    description: PDE rows matched to the MVP sitagliptin/Januvia product code seed.
+    columns:
+      - name: desynpuf_id
+        tests: [not_null]
+      - name: fill_date
+        tests: [not_null]
+      - name: pde_id
+        tests: [not_null]
+
+  - name: int_synpuf__sitagliptin_cohort
+    description: One-row-per-beneficiary sitagliptin cohort anchored on first qualifying fill.
+    columns:
+      - name: desynpuf_id
+        tests: [not_null, unique]
+      - name: index_date
+        tests: [not_null]
+
+  - name: int_topic__patient_events
+    description: Minimal baseline event layer for topic modeling around sitagliptin initiation.
+    columns:
+      - name: desynpuf_id
+        tests: [not_null]
+      - name: event_date
+        tests: [not_null]
+      - name: event_token
+        tests: [not_null]
+
+  - name: mart_topic__patient_documents
+    description: One-row-per-beneficiary modeling artifact containing the baseline document text.
+    columns:
+      - name: desynpuf_id
+        tests: [not_null, unique]
+      - name: document_text
+        description: Space-delimited token document for downstream vectorization.
