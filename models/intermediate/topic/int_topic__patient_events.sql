@@ -57,7 +57,7 @@ outpatient_util as (
         0 as is_index_event,
         1.0 as event_weight
     from cohort c
-    inner join {{ ref('stg_synpuf__op_sample_01') }} op
+    inner join {{ ref('int_synpuf__op_sample_01') }} op
       on c.desynpuf_id = op.desynpuf_id
      and op.claim_from_date between c.baseline_start_date and c.index_date
 ),
@@ -112,7 +112,7 @@ op_dx_long as (
         'OP' as source_family,
         op.claim_id as source_record_id
     from cohort c
-    inner join {{ ref('stg_synpuf__op_sample_01') }} op
+    inner join {{ ref('int_synpuf__op_sample_01') }} op
       on c.desynpuf_id = op.desynpuf_id
      and op.claim_from_date between c.baseline_start_date and c.index_date
     cross join lateral (
@@ -139,14 +139,18 @@ dx_grouped as (
         event_type,
         case
             when regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '250%' then 'dx_diabetes'
+            
             when regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '401%'
               or regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '402%'
               or regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '403%'
               or regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '404%'
               or regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '405%'
                 then 'dx_hypertension'
+            
             when regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '272%' then 'dx_hyperlipidemia'
+            
             when regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '585%' then 'dx_ckd'
+            
             when regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '428%'
               or regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '410%'
               or regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '411%'
@@ -163,11 +167,14 @@ dx_grouped as (
               or regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '437%'
               or regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '438%'
                 then 'dx_cardiovascular'
+            
             when regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '2780%' then 'dx_obesity'
+            
             when regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '2962%'
               or regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '2963%'
               or regexp_replace(diagnosis_code, '[^0-9VvEe]', '') like '311%'
                 then 'dx_depression'
+            
             else null
         end as event_token,
         source_family,
@@ -212,12 +219,12 @@ demographic_events as (
                 when c.age_at_index >= 80 then 'demo_age_80_plus'
                 else 'demo_age_unknown'
             end
-        union all select 'comorb_chf'                   where c.sp_chf = 1
-        union all select 'comorb_ckd'                   where c.sp_chrnkidn = 1
-        union all select 'comorb_copd'                  where c.sp_copd = 1
-        union all select 'comorb_depression'            where c.sp_depressn = 1
-        union all select 'comorb_ischemic_heart_disease' where c.sp_ischmcht = 1
-        union all select 'comorb_stroke_tia'            where c.sp_strketia = 1
+        union all select 'comorb_chf'                   where c.chronic_condition_congestive_heart_failure_flag = 1
+        union all select 'comorb_ckd'                   where c.chronic_condition_chronic_kidney_disease_flag = 1
+        union all select 'comorb_copd'                  where c.chronic_condition_copd_flag = 1
+        union all select 'comorb_depression'            where c.chronic_condition_depression_flag = 1
+        union all select 'comorb_ischemic_heart_disease' where c.chronic_condition_ischemic_heart_disease_flag = 1
+        union all select 'comorb_stroke_tia'            where c.chronic_condition_stroke_or_tia_flag = 1
     ) demo
 ),
 

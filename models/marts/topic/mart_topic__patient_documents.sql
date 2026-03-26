@@ -43,7 +43,7 @@ select
     c.followup_end_date,
     c.age_at_index,
     c.sex,
-    c.bene_death_date,
+    c.beneficiary_death_date,
     coalesce(a.token_count, 0) as token_count,
     coalesce(a.diagnosis_token_count, 0) as diagnosis_token_count,
     coalesce(a.drug_token_count, 0) as drug_token_count,

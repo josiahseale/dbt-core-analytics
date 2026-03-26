@@ -1,33 +1,82 @@
+{{ config(materialized='view') }}
+
 select
-    DESYNPUF_ID as desynpuf_id,
-    CLM_ID as claim_id,
-    SEGMENT as claim_line_segment,
-    try_to_date(CLM_FROM_DT::varchar, 'YYYYMMDD') as claim_from_date,
-    try_to_date(CLM_THRU_DT::varchar, 'YYYYMMDD') as claim_thru_date,
-    PRVDR_NUM as provider_number,
-    CLM_PMT_AMT as claim_payment_amount,
-    NCH_PRMRY_PYR_CLM_PD_AMT as nch_primary_payer_claim_paid_amount,
-    AT_PHYSN_NPI as attending_physician_npi,
-    OP_PHYSN_NPI as operating_physician_npi,
-    OT_PHYSN_NPI as other_physician_npi,
-    NCH_BENE_BLOOD_DDCTBL_LBLTY_AM as nch_beneficiary_blood_deductible_liability_amount
-
-    {% for i in range(1, 11) %}
-    , ICD9_DGNS_CD_{{ i }} as icd9_diagnosis_code_{{ i }}
-    {% endfor %}
-
-    {% for i in range(1, 7) %}
-    , ICD9_PRCDR_CD_{{ i }} as icd9_procedure_code_{{ i }}
-    {% endfor %}
-
-    , NCH_BENE_PTB_DDCTBL_AMT as nch_beneficiary_part_b_deductible_amount
-    , NCH_BENE_PTB_COINSRNC_AMT as nch_beneficiary_part_b_coinsurance_amount
-    , ADMTNG_ICD9_DGNS_CD as admitting_icd9_diagnosis_code
-
-    {% for i in range(1, 46) %}
-    , HCPCS_CD_{{ i }} as hcpcs_cd_{{ i }}
-    {% endfor %}
-
-    , 1 as sample_id
-    , 'DE1_0_2008_TO_2010_OUTPATIENT_CLAIMS_SAMPLE_1' as source_table_name
+    cast(DESYNPUF_ID as {{ type_string() }}) as desynpuf_id,
+    cast(CLM_ID as {{ type_string() }}) as clm_id,
+    cast(SEGMENT as integer) as segment,
+    {{ type_date('CLM_FROM_DT') }} as clm_from_dt,
+    {{ type_date('CLM_THRU_DT') }} as clm_thru_dt,
+    cast(PRVDR_NUM as {{ type_string() }}) as prvdr_num,
+    cast(CLM_PMT_AMT as {{ type_decimal(38, 2) }}) as clm_pmt_amt,
+    cast(NCH_PRMRY_PYR_CLM_PD_AMT as {{ type_decimal(38, 2) }}) as nch_prmry_pyr_clm_pd_amt,
+    cast(AT_PHYSN_NPI as {{ type_string() }}) as at_physn_npi,
+    cast(OP_PHYSN_NPI as {{ type_string() }}) as op_physn_npi,
+    cast(OT_PHYSN_NPI as {{ type_string() }}) as ot_physn_npi,
+    cast(NCH_BENE_BLOOD_DDCTBL_LBLTY_AM as {{ type_decimal(38, 2) }}) as nch_bene_blood_ddctbl_lblty_am,
+    cast(ICD9_DGNS_CD_1 as {{ type_string() }}) as icd9_dgns_cd_1,
+    cast(ICD9_DGNS_CD_2 as {{ type_string() }}) as icd9_dgns_cd_2,
+    cast(ICD9_DGNS_CD_3 as {{ type_string() }}) as icd9_dgns_cd_3,
+    cast(ICD9_DGNS_CD_4 as {{ type_string() }}) as icd9_dgns_cd_4,
+    cast(ICD9_DGNS_CD_5 as {{ type_string() }}) as icd9_dgns_cd_5,
+    cast(ICD9_DGNS_CD_6 as {{ type_string() }}) as icd9_dgns_cd_6,
+    cast(ICD9_DGNS_CD_7 as {{ type_string() }}) as icd9_dgns_cd_7,
+    cast(ICD9_DGNS_CD_8 as {{ type_string() }}) as icd9_dgns_cd_8,
+    cast(ICD9_DGNS_CD_9 as {{ type_string() }}) as icd9_dgns_cd_9,
+    cast(ICD9_DGNS_CD_10 as {{ type_string() }}) as icd9_dgns_cd_10,
+    cast(ICD9_PRCDR_CD_1 as {{ type_string() }}) as icd9_prcdr_cd_1,
+    cast(ICD9_PRCDR_CD_2 as {{ type_string() }}) as icd9_prcdr_cd_2,
+    cast(ICD9_PRCDR_CD_3 as {{ type_string() }}) as icd9_prcdr_cd_3,
+    cast(ICD9_PRCDR_CD_4 as {{ type_string() }}) as icd9_prcdr_cd_4,
+    cast(ICD9_PRCDR_CD_5 as {{ type_string() }}) as icd9_prcdr_cd_5,
+    cast(ICD9_PRCDR_CD_6 as {{ type_string() }}) as icd9_prcdr_cd_6,
+    cast(NCH_BENE_PTB_DDCTBL_AMT as {{ type_decimal(38, 2) }}) as nch_bene_ptb_ddctbl_amt,
+    cast(NCH_BENE_PTB_COINSRNC_AMT as {{ type_decimal(38, 2) }}) as nch_bene_ptb_coinsrnc_amt,
+    cast(ADMTNG_ICD9_DGNS_CD as {{ type_string() }}) as admtng_icd9_dgns_cd,
+    cast(HCPCS_CD_1 as {{ type_string() }}) as hcpcs_cd_1,
+    cast(HCPCS_CD_2 as {{ type_string() }}) as hcpcs_cd_2,
+    cast(HCPCS_CD_3 as {{ type_string() }}) as hcpcs_cd_3,
+    cast(HCPCS_CD_4 as {{ type_string() }}) as hcpcs_cd_4,
+    cast(HCPCS_CD_5 as {{ type_string() }}) as hcpcs_cd_5,
+    cast(HCPCS_CD_6 as {{ type_string() }}) as hcpcs_cd_6,
+    cast(HCPCS_CD_7 as {{ type_string() }}) as hcpcs_cd_7,
+    cast(HCPCS_CD_8 as {{ type_string() }}) as hcpcs_cd_8,
+    cast(HCPCS_CD_9 as {{ type_string() }}) as hcpcs_cd_9,
+    cast(HCPCS_CD_10 as {{ type_string() }}) as hcpcs_cd_10,
+    cast(HCPCS_CD_11 as {{ type_string() }}) as hcpcs_cd_11,
+    cast(HCPCS_CD_12 as {{ type_string() }}) as hcpcs_cd_12,
+    cast(HCPCS_CD_13 as {{ type_string() }}) as hcpcs_cd_13,
+    cast(HCPCS_CD_14 as {{ type_string() }}) as hcpcs_cd_14,
+    cast(HCPCS_CD_15 as {{ type_string() }}) as hcpcs_cd_15,
+    cast(HCPCS_CD_16 as {{ type_string() }}) as hcpcs_cd_16,
+    cast(HCPCS_CD_17 as {{ type_string() }}) as hcpcs_cd_17,
+    cast(HCPCS_CD_18 as {{ type_string() }}) as hcpcs_cd_18,
+    cast(HCPCS_CD_19 as {{ type_string() }}) as hcpcs_cd_19,
+    cast(HCPCS_CD_20 as {{ type_string() }}) as hcpcs_cd_20,
+    cast(HCPCS_CD_21 as {{ type_string() }}) as hcpcs_cd_21,
+    cast(HCPCS_CD_22 as {{ type_string() }}) as hcpcs_cd_22,
+    cast(HCPCS_CD_23 as {{ type_string() }}) as hcpcs_cd_23,
+    cast(HCPCS_CD_24 as {{ type_string() }}) as hcpcs_cd_24,
+    cast(HCPCS_CD_25 as {{ type_string() }}) as hcpcs_cd_25,
+    cast(HCPCS_CD_26 as {{ type_string() }}) as hcpcs_cd_26,
+    cast(HCPCS_CD_27 as {{ type_string() }}) as hcpcs_cd_27,
+    cast(HCPCS_CD_28 as {{ type_string() }}) as hcpcs_cd_28,
+    cast(HCPCS_CD_29 as {{ type_string() }}) as hcpcs_cd_29,
+    cast(HCPCS_CD_30 as {{ type_string() }}) as hcpcs_cd_30,
+    cast(HCPCS_CD_31 as {{ type_string() }}) as hcpcs_cd_31,
+    cast(HCPCS_CD_32 as {{ type_string() }}) as hcpcs_cd_32,
+    cast(HCPCS_CD_33 as {{ type_string() }}) as hcpcs_cd_33,
+    cast(HCPCS_CD_34 as {{ type_string() }}) as hcpcs_cd_34,
+    cast(HCPCS_CD_35 as {{ type_string() }}) as hcpcs_cd_35,
+    cast(HCPCS_CD_36 as {{ type_string() }}) as hcpcs_cd_36,
+    cast(HCPCS_CD_37 as {{ type_string() }}) as hcpcs_cd_37,
+    cast(HCPCS_CD_38 as {{ type_string() }}) as hcpcs_cd_38,
+    cast(HCPCS_CD_39 as {{ type_string() }}) as hcpcs_cd_39,
+    cast(HCPCS_CD_40 as {{ type_string() }}) as hcpcs_cd_40,
+    cast(HCPCS_CD_41 as {{ type_string() }}) as hcpcs_cd_41,
+    cast(HCPCS_CD_42 as {{ type_string() }}) as hcpcs_cd_42,
+    cast(HCPCS_CD_43 as {{ type_string() }}) as hcpcs_cd_43,
+    cast(HCPCS_CD_44 as {{ type_string() }}) as hcpcs_cd_44,
+    cast(HCPCS_CD_45 as {{ type_string() }}) as hcpcs_cd_45,
+    1 as sample_id,
+    'DE1_0_2008_TO_2010_OUTPATIENT_CLAIMS_SAMPLE_1' as source_table_name
 from {{ source('synpuf_prestaging', 'DE1_0_2008_TO_2010_OUTPATIENT_CLAIMS_SAMPLE_1') }}
